@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PF2e Monster Prompt Generator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #1e1e2f;
+      color: #f0f0f0;
+      padding: 20px;
+      margin: 0;
+    }
+    h1 {
+      color: #f9cb40;
+      border-bottom: 2px solid #f9cb40;
+      padding-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input[type="text"], select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: none;
+      background-color: #2a2a40;
+      color: #f0f0f0;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background-color: #f9cb40;
+      color: #1e1e2f;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #e6b800;
+    }
+    #output {
+      margin-top: 20px;
+      background-color: #2a2a40;
+      padding: 15px;
+      border-radius: 5px;
+      border: 1px solid #f9cb40;
+      white-space: pre-line;
+    }
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>PF2e Monster Prompt Generator</h1>
+
+  <div class="toggle">
+    <label for="referenceToggle">Will you be providing a reference image?</label>
+    <input type="checkbox" id="referenceToggle">
+  </div>
+
+  <div class="toggle">
+    <label for="specificToggle">Is this a specific PF2e creature?</label>
+    <input type="checkbox" id="specificToggle" onchange="toggleFields()">
+  </div>
+
+  <div id="specificFields">
+    <label for="name">Creature Name:</label>
+    <input type="text" id="name" placeholder="e.g., Choker, Basilisk, Owlbear">
+
+    <label for="unique">Unique Features:</label>
+    <input type="text" id="unique" placeholder="e.g., extra limbs, molten eyes, armored hide">
+  </div>
+
+  <div id="customFields" style="display: none;">
+    <label for="family">Creature Family:</label>
+    <input type="text" id="family" placeholder="e.g., dragon, ooze, undead">
+
+    <label for="color">Creature Color or Patterns:</label>
+    <input type="text" id="color" placeholder="e.g., iridescent scales, striped fur">
+
+    <label for="customFeatures">Unique Creature Features:</label>
+    <input type="text" id="customFeatures" placeholder="e.g., glowing veins, bone protrusions">
+
+    <label for="temperament">Creature Temperament:</label>
+    <input type="text" id="temperament" placeholder="e.g., aggressive, curious, playful">
+
+    <label for="pose">Creature Pose:</label>
+    <input type="text" id="pose" placeholder="e.g., rearing up, crouching, flying">
+  </div>
+
+  <button onclick="generateMonsterPrompt()">Generate Monster Prompt</button>
+
+  <div id="output"></div>
+
+  <script>
+    function toggleFields() {
+      const specific = document.getElementById("specificToggle").checked;
+      document.getElementById("specificFields").style.display = specific ? "block" : "none";
+      document.getElementById("customFields").style.display = specific ? "none" : "block";
+    }
+
+    function generateMonsterPrompt() {
+      const useRef = document.getElementById("referenceToggle").checked;
+      const isSpecific = document.getElementById("specificToggle").checked;
+      let prompt = "enhance this prompt and then generate a token based off the enhanced prompt\n\n";
+      if (useRef) prompt += "based off this reference image\n";
+
+      if (isSpecific) {
+        const name = document.getElementById("name").value;
+        const unique = document.getElementById("unique").value;
+        prompt += `Generate a full-body isometric top-down token for use with FoundryVTT, styled after detailed Pathfinder 2e artwork.\n`;
+        prompt += `The token is of the creature "${name}" with the following unique features: ${unique}.\n`;
+      } else {
+        const family = document.getElementById("family").value;
+        const color = document.getElementById("color").value;
+        const features = document.getElementById("customFeatures").value;
+        const temperament = document.getElementById("temperament").value;
+        const pose = document.getElementById("pose").value;
+        prompt += `Generate a full-body isometric top-down token for use with FoundryVTT, styled after detailed Pathfinder 2e artwork.\n`;
+        prompt += `The token is of a creature from the ${family} family with ${color}, featuring ${features}.\n`;
+        prompt += `Its demeanor is ${temperament}, and it's posed ${pose}.\n`;
+      }
+
+      prompt += `The token should be a .png file with a transparent background in an isometric top-down perspective.`;
+      document.getElementById("output").innerText = prompt;
+    }
+  </script>
+
+</body>
+</html>
